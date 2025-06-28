@@ -1,112 +1,139 @@
-🔴 Très bien ! Voici le **README final**, version **corrigée** avec le **nom exact** : **Red Lock** ⚡
+📘 Red Lock — README
+🎯 Pitch
 
----
+Red Lock est un simulateur de football 2D où des joueurs identiques au départ apprennent à jouer collectivement grâce à un algorithme de Reinforcement Learning (RL).
+Inspiré de Blue Lock, le but est de faire émerger des styles de jeu, des rôles et des schémas collectifs uniques, sans règles fixées à l’avance.
+⚙️ Composition
 
-# 📘 **Red Lock — README**
+    2 équipes
 
----
+        2 joueurs de champ contrôlés par une IA RL.
 
-## 🎯 Pitch
+        1 gardien par équipe.
 
-**Red Lock** est un prototype de **simulateur de football 2D** où des joueurs **identiques au départ** apprennent à jouer **collectivement** grâce à un **algorithme de Reinforcement Learning (RL)**.
-Inspiré de *Blue Lock*, l’objectif est de faire émerger **des styles de jeu variés**, des **rôles naturels** et des **schémas tactiques collectifs** sans règles figées.
+    ⚽ Terrain 2D, simulation en temps réel.
 
----
+    📊 Après chaque match, analyse collective du style : bloc bas, pressing haut, jeu large, jeu compact.
 
-## ⚙️ Composition
+🧤 Le gardien
 
-* **2 équipes**
+    Actions : couvrir la ligne, plonger, sortir intercepter.
 
-  * 2 joueurs de champ contrôlés par une IA RL.
-  * 1 gardien par équipe (IA scriptée au départ).
-* ⚽ Terrain 2D simulé en temps réel.
-* 🎮 Chaque joueur agit selon ses **caractéristiques exprimées en %**.
-* 📊 Après chaque match, une **analyse collective** permet de détecter le style global de l’équipe : bloc bas, pressing haut, jeu large, compact, etc.
+    Caractéristiques spécifiques : Réflexes, Plongeon, Relance.
 
----
+    Logique propre au début (scriptée), optimisable en IA plus tard.
 
-## 🔀 Actions possibles
+    Comme tout joueur, ses stats s’inscrivent dans la somme fixe de 100%.
 
-| Action             | Quand ?                                               | Description                                                          |
-| ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------- |
-| 🔵 **Se déplacer** | Toujours autorisé                                     | Aller vers une position cible, avec une vitesse choisie (1, 2 ou 3). |
-| 🟢 **Passer**      | Si **en possession du ballon**                        | Passer à un coéquipier.                                              |
-| 🟣 **Tirer**       | Si **en possession du ballon**                        | Tirer vers le but adverse.                                           |
-| 🟠 **Dribbler**    | Si **en possession du ballon**                        | Avancer avec le ballon pour échapper à un adversaire.                |
-| 🟤 **Intercepter** | Si **PAS en possession** et **balle proche**          | Se placer pour couper une passe ou un tir.                           |
-| ⚫ **Tacler**       | Si **PAS en possession** et **joueur porteur proche** | Tenter de récupérer le ballon directement sur un adversaire.         |
+🔀 Actions possibles
+Action	Quand ?	Description
+🔵 Se déplacer	Toujours autorisé	Vers une position cible, vitesse choisie (1, 2 ou 3).
+🟢 Passer	Si en possession	Passe à un coéquipier.
+🟣 Tirer	Si en possession	Tirer vers le but adverse.
+🟠 Dribbler	Si en possession	Échapper à un adversaire proche.
+🟤 Intercepter	Si PAS en possession, balle proche	Couper une passe/tir.
+⚫ Tacler	Si PAS en possession, joueur porteur proche	Tenter de récupérer le ballon directement.
+✅ Déplacement et intensité
 
----
+    Intensité : 1 (marche), 2 (course), 3 (sprint).
 
-## ✅ Déplacement avec intensité
+    Vitesse max limitée par Vitesse (%).
 
-Quand un joueur se déplace :
+    Nombre total de sprints limité par Endurance (%).
 
-* Il choisit une **intensité** :
+🧬 Caractéristiques — somme fixe
 
-  * **1** : marche
-  * **2** : course normale
-  * **3** : sprint
+Chaque joueur (y compris le gardien) dispose d’un pack de stats (%) dont la somme = 100.
+La répartition évolue via l’apprentissage, forgeant des rôles uniques.
+⚖️ Principe des duels — A vs B
 
-Sa **vitesse réelle** dépend de sa stat **Vitesse (%)**, et le **nombre total de sprints** est limité par sa stat **Endurance (%)**.
+Toutes les actions sont des duels entre :
 
----
+    A = Valeur de l’action du joueur
 
-## 🧬 **Caractéristiques — somme fixe**
+    B = Valeur défensive/adverse
 
-Chaque joueur possède un **ensemble de caractéristiques**, exprimées en pourcentages, dont la **somme est toujours égale à 100**.
-Cela garantit que tous les joueurs ont le **même potentiel global**, mais qu’il peut être réparti différemment au fil du temps.
+L’action réussit si A > B.
+📏 Formules de calcul — Règles numériques
+✅ 1️⃣ Déplacement
 
----
+    Vitesse réelle = Vitesse max moteur × Intensité (1/2/3) × (Vitesse % / 100)
 
-## ⚡️ **Impact des caractéristiques sur les actions**
+    Exemple :
 
-| Stat                    | Impact direct                                                                                                                              |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Vitesse (%)**         | Détermine la vitesse maximale de déplacement (marche, course, sprint). Plus le pourcentage est haut, plus le joueur peut se déplacer vite. |
-| **Endurance (%)**       | Définit le **nombre total de sprints** autorisés par match. Une faible endurance limite le nombre de sprints possibles.                    |
-| **Précision passe (%)** | Probabilité de réussir une passe propre. Plus le pourcentage est élevé, moins il y a de risque d’échec ou d’interception.                  |
-| **Précision tir (%)**   | Probabilité qu’un tir soit cadré et puissant.                                                                                              |
-| **Dribble (%)**         | Probabilité de réussir un dribble face à un adversaire direct.                                                                             |
-| **Interception (%)**    | Probabilité de couper une passe ou une trajectoire de balle.                                                                               |
-| **Tacle (%)**           | Probabilité de réussir un tacle propre sans faute.                                                                                         |
+        Vitesse % = 80, intensité = 3 ➜ vitesse réelle = 3 × max × 0.8
 
----
+✅ 2️⃣ Sprints autorisés
 
-## 🧩 **Exemple concret**
+    Nombre max sprints par match = Endurance %
+    (si limite théorique = 100 sprints/ticks)
 
-* Un joueur avec **Vitesse 80%** et **Endurance 40%** pourra aller vite mais aura peu de sprints à disposition.
-* Un joueur avec **Précision passe 70%** sera fiable dans la distribution mais pourra être vulnérable s’il dribble mal.
-* Un joueur avec **Tacle 20%** aura un risque élevé de faute ou d’échec lors d’un tacle.
+    Exemple :
 
----
+        Endurance 40% ➜ 40 sprints autorisés avant fatigue/ralentissement.
 
-## ⏱️ **Terrain, FPS et durée**
+✅ 3️⃣ Passer
 
-* 🎮 Simulation fluide à 30–60 FPS.
-* ⚽ Un match dure entre 2 et 5 minutes pour simuler un scénario réaliste.
-* 📏 Dimensions du terrain ajustées pour :
+    A = Précision passe % × (1 – Pénalité distance)
 
-  * Assurer que la vitesse des joueurs est crédible.
-  * Éviter qu’un sprint traverse tout le terrain en quelques secondes.
-  * Correspondre à la durée et aux FPS choisis.
+        Pénalité distance = (Distance passe / Distance max) × Facteur distance
 
----
+    B = Interception % du défenseur le plus proche × Alignement %
 
-## 📊 **Analyse collective après match**
+    Résultat : Passe réussie si A > B.
 
-A la fin de chaque match, l’équipe est analysée comme un bloc :
+✅ 4️⃣ Tirer
 
-* 📏 Moyenne X/Y ➜ indique si l’équipe joue bloc bas, médian ou haut.
-* 📏 Variance X/Y ➜ indique si l’équipe est large ou resserrée.
-* 🔗 Distance moyenne entre joueurs ➜ mesure de compacité.
-* ⚽ Statistiques globales : % possession, passes, interceptions, tacles.
+    A = Précision tir % × (1 – Pénalité distance)
 
-Ces métriques permettent de **repérer les styles collectifs** : bloc bas, pressing haut, jeu axial, jeu large, bloc compact.
+        Pénalité distance = (Distance tir / Distance max tir) × Facteur distance
 
----
+    B = Réflexes % + Plongeon % du gardien × Facteur angle
 
-## ✅ **Principe clé**
+    Résultat : But si A > B.
 
-**Tous les joueurs démarrent avec le même potentiel (somme = 100)**.
-Ce sont leurs **répartitions et l’apprentissage** qui feront émerger des profils différents : sprinteur explosif, passeur précis, dribbleur créatif, défenseur rugueux.
+✅ 5️⃣ Dribbler
+
+    A = Dribble %
+
+    B = Tacle % ou Interception % du défenseur proche
+
+    Résultat : Dribble réussi si A > B.
+
+✅ 6️⃣ Intercepter
+
+    A = Interception % du défenseur × Alignement %
+
+    B = Précision passe % du passeur
+
+    Résultat : Interception si A > B.
+
+✅ 7️⃣ Tacler
+
+    A = Tacle %
+
+    B = Dribble % du porteur
+
+    Résultat : Tacle réussi si A > B.
+
+📐 Facteurs & modificateurs
+Facteur	Rôle
+Distance	Réduit la valeur d’une passe ou tir à mesure que la distance augmente.
+Angle	Réduit ou augmente la valeur B pour un gardien (ex. : tir excentré ➜ angle réduit).
+Alignement	Bonus/malus selon le placement sur la trajectoire.
+Vitesse relative	Peut moduler A ou B, ex. : sprinter pour surprendre.
+📊 Analyse collective après match
+
+    Moyenne X/Y ➜ bloc bas, haut, médian.
+
+    Variance X/Y ➜ largeur ou compacité.
+
+    Distance moyenne ➜ structure collective.
+
+    % possession, passes, interceptions, tacles, arrêts gardien ➜ style global.
+
+✅ Principe clé
+
+Même potentiel initial (somme = 100)
+Résultat réel = stat brute + contexte dynamique (distance, angle, alignement)
+Le moteur = duel permanent A vs B pour chaque action clé.
