@@ -29,7 +29,7 @@ for ep in tqdm(range(episodes), desc="Episodes"):
     while env.running and env.ticks < env.max_ticks:
         env.handle_events()
         env.update()
-        #env.draw()  # Désactive pour aller plus vite
+        env.draw()  # Désactive pour aller plus vite
 
         for p in env.players:
             env.positions_x.append(p.x)
