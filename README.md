@@ -1,104 +1,112 @@
-📘 Red Lock — README
-🎯 Pitch
+🔴 Très bien ! Voici le **README final**, version **corrigée** avec le **nom exact** : **Red Lock** ⚡
 
-Red Lock est un prototype de simulateur de football 2D où des joueurs identiques au départ apprennent à jouer collectivement grâce à un algorithme de Reinforcement Learning (RL).
-Inspiré de Blue Lock, l’objectif est de simuler l’émergence de styles de jeu variés, de rôles naturels et de tactiques collectives sans règles codées en dur.
-⚙️ Composition
+---
 
-    2 équipes
+# 📘 **Red Lock — README**
 
-        2 joueurs de champ IA RL.
+---
 
-        1 gardien par équipe (IA scriptée au départ).
+## 🎯 Pitch
 
-    ⚽ Terrain 2D affiché en temps réel (Pygame).
+**Red Lock** est un prototype de **simulateur de football 2D** où des joueurs **identiques au départ** apprennent à jouer **collectivement** grâce à un **algorithme de Reinforcement Learning (RL)**.
+Inspiré de *Blue Lock*, l’objectif est de faire émerger **des styles de jeu variés**, des **rôles naturels** et des **schémas tactiques collectifs** sans règles figées.
 
-    🎮 Chaque joueur décide quoi faire, influencé par ses caractéristiques %.
+---
 
-    📊 Après chaque match, l’équipe est caractérisée collectivement (bloc haut/bas, large/resserré, etc.).
+## ⚙️ Composition
 
-🔀 Actions possibles
-Action	Condition	Description
-🔵 Se déplacer	Toujours autorisé	Aller vers une position cible en choisissant une vitesse (1, 2, 3).
-🟢 Passer	Si en possession du ballon	Passer à un coéquipier, réussite dépend de la précision passe (%).
-🟣 Tirer	Si en possession du ballon	Tirer vers le but adverse, réussite dépend de la précision tir (%).
-🟠 Dribbler	Si en possession du ballon	Avancer avec le ballon en essayant d’échapper à un adversaire, succès dépend du dribble (%).
-🟤 Intercepter	Si PAS en possession et ballon proche	Se placer sur la trajectoire pour couper une passe/tir, succès dépend de l’interception (%).
-⚫ Tacler	Si PAS en possession et joueur porteur proche	Tenter de récupérer le ballon directement, succès dépend du tacle (%).
-✅ Déplacement avec intensité
+* **2 équipes**
 
-    Lorsqu’un joueur se déplace, il choisit :
+  * 2 joueurs de champ contrôlés par une IA RL.
+  * 1 gardien par équipe (IA scriptée au départ).
+* ⚽ Terrain 2D simulé en temps réel.
+* 🎮 Chaque joueur agit selon ses **caractéristiques exprimées en %**.
+* 📊 Après chaque match, une **analyse collective** permet de détecter le style global de l’équipe : bloc bas, pressing haut, jeu large, compact, etc.
 
-        Une direction cible.
+---
 
-        Une intensité :
+## 🔀 Actions possibles
 
-            1 : déplacement lent (marche).
+| Action             | Quand ?                                               | Description                                                          |
+| ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| 🔵 **Se déplacer** | Toujours autorisé                                     | Aller vers une position cible, avec une vitesse choisie (1, 2 ou 3). |
+| 🟢 **Passer**      | Si **en possession du ballon**                        | Passer à un coéquipier.                                              |
+| 🟣 **Tirer**       | Si **en possession du ballon**                        | Tirer vers le but adverse.                                           |
+| 🟠 **Dribbler**    | Si **en possession du ballon**                        | Avancer avec le ballon pour échapper à un adversaire.                |
+| 🟤 **Intercepter** | Si **PAS en possession** et **balle proche**          | Se placer pour couper une passe ou un tir.                           |
+| ⚫ **Tacler**       | Si **PAS en possession** et **joueur porteur proche** | Tenter de récupérer le ballon directement sur un adversaire.         |
 
-            2 : déplacement normal (course).
+---
 
-            3 : sprint (vitesse max).
+## ✅ Déplacement avec intensité
 
-    La vitesse réelle est limitée par la stat Vitesse (%).
+Quand un joueur se déplace :
 
-    Le nombre total de sprints est limité par la stat Endurance (%).
+* Il choisit une **intensité** :
 
-⏱️ Terrain, FPS et durée
+  * **1** : marche
+  * **2** : course normale
+  * **3** : sprint
 
-    🎮 FPS cible : 30–60 FPS pour une simulation fluide.
+Sa **vitesse réelle** dépend de sa stat **Vitesse (%)**, et le **nombre total de sprints** est limité par sa stat **Endurance (%)**.
 
-    ⚽ Durée d’un match : typiquement 2–5 minutes par simulation.
+---
 
-    📏 Dimensions du terrain :
+## 🧬 **Caractéristiques — somme fixe**
 
-        Cohérentes avec vitesse des joueurs, nombre de frames et durée totale.
+Chaque joueur possède un **ensemble de caractéristiques**, exprimées en pourcentages, dont la **somme est toujours égale à 100**.
+Cela garantit que tous les joueurs ont le **même potentiel global**, mais qu’il peut être réparti différemment au fil du temps.
 
-        Par exemple : un joueur ne doit pas traverser le terrain en 2 secondes en sprint.
+---
 
-🧬 Statistiques — somme fixe
+## ⚡️ **Impact des caractéristiques sur les actions**
 
-Chaque joueur possède un ensemble de caractéristiques, exprimées en %, dont la somme est toujours égale à 100.
-Stat	Impact direct
-Vitesse (%)	Limite la vitesse max de déplacement (marche/course/sprint).
-Endurance (%)	Définit le nombre total de sprints autorisés par match.
-Précision passe (%)	Détermine la probabilité de réussir une passe propre.
-Précision tir (%)	Détermine la probabilité qu’un tir soit cadré et puissant.
-Dribble (%)	Détermine la probabilité de réussir un dribble face à un adversaire.
-Interception (%)	Détermine la probabilité de couper une trajectoire de balle.
-Tacle (%)	Détermine la probabilité de récupérer proprement le ballon lors d’un duel.
+| Stat                    | Impact direct                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Vitesse (%)**         | Détermine la vitesse maximale de déplacement (marche, course, sprint). Plus le pourcentage est haut, plus le joueur peut se déplacer vite. |
+| **Endurance (%)**       | Définit le **nombre total de sprints** autorisés par match. Une faible endurance limite le nombre de sprints possibles.                    |
+| **Précision passe (%)** | Probabilité de réussir une passe propre. Plus le pourcentage est élevé, moins il y a de risque d’échec ou d’interception.                  |
+| **Précision tir (%)**   | Probabilité qu’un tir soit cadré et puissant.                                                                                              |
+| **Dribble (%)**         | Probabilité de réussir un dribble face à un adversaire direct.                                                                             |
+| **Interception (%)**    | Probabilité de couper une passe ou une trajectoire de balle.                                                                               |
+| **Tacle (%)**           | Probabilité de réussir un tacle propre sans faute.                                                                                         |
 
-Règle clé :
+---
 
-    Tous les joueurs commencent avec une répartition identique ➜ même potentiel.
+## 🧩 **Exemple concret**
 
-    L’apprentissage (RL) redistribue ces % pour créer des styles uniques :
+* Un joueur avec **Vitesse 80%** et **Endurance 40%** pourra aller vite mais aura peu de sprints à disposition.
+* Un joueur avec **Précision passe 70%** sera fiable dans la distribution mais pourra être vulnérable s’il dribble mal.
+* Un joueur avec **Tacle 20%** aura un risque élevé de faute ou d’échec lors d’un tacle.
 
-        Plus de vitesse ➜ moins de dribble ou de précision.
+---
 
-        Plus de passes ➜ moins d’agressivité défensive.
+## ⏱️ **Terrain, FPS et durée**
 
-        Etc.
+* 🎮 Simulation fluide à 30–60 FPS.
+* ⚽ Un match dure entre 2 et 5 minutes pour simuler un scénario réaliste.
+* 📏 Dimensions du terrain ajustées pour :
 
-🎁 Exemple de limitation
+  * Assurer que la vitesse des joueurs est crédible.
+  * Éviter qu’un sprint traverse tout le terrain en quelques secondes.
+  * Correspondre à la durée et aux FPS choisis.
 
-    Endurance = 40% ➜ maximum 40 sprints autorisés par match.
+---
 
-    Vitesse = 80% ➜ vitesse max de déplacement = 80% de la vitesse max du moteur.
+## 📊 **Analyse collective après match**
 
-    Précision passe = 60% ➜ 60% de chance de passe réussie, sinon imprécision.
+A la fin de chaque match, l’équipe est analysée comme un bloc :
 
-📊 Analyse collective
+* 📏 Moyenne X/Y ➜ indique si l’équipe joue bloc bas, médian ou haut.
+* 📏 Variance X/Y ➜ indique si l’équipe est large ou resserrée.
+* 🔗 Distance moyenne entre joueurs ➜ mesure de compacité.
+* ⚽ Statistiques globales : % possession, passes, interceptions, tacles.
 
-Après chaque match :
+Ces métriques permettent de **repérer les styles collectifs** : bloc bas, pressing haut, jeu axial, jeu large, bloc compact.
 
-    Calcul de :
+---
 
-        📏 Moyenne X/Y ➜ bloc haut/bas, axe du jeu.
+## ✅ **Principe clé**
 
-        📏 Variance X/Y ➜ jeu large ou resserré.
-
-        🔗 Distance moyenne entre joueurs ➜ indice de compacité.
-
-        ⚽ % de possession, passes réussies, interceptions, tacles ➜ style collectif.
-
-    Ces métriques servent à identifier des styles d’équipe : bloc bas, pressing haut, jeu axial, jeu large, etc.
+**Tous les joueurs démarrent avec le même potentiel (somme = 100)**.
+Ce sont leurs **répartitions et l’apprentissage** qui feront émerger des profils différents : sprinteur explosif, passeur précis, dribbleur créatif, défenseur rugueux.
