@@ -10,9 +10,9 @@ from tqdm import tqdm
 # Ajoute la racine du projet au path Python
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from env.core.game import Game
-from env.metrics import compute_style_metrics
-from env.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
+from env_dev_dev.core.game import Game
+from env_dev_dev.metrics import compute_style_metrics
+from env_dev_dev.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
 
 
 # === ARGPARSE ===
@@ -31,29 +31,29 @@ save_path = "data/models/rl_agent_v1_final.pth"
 results = []
 
 for ep in tqdm(range(episodes), desc="Episodes"):
-    env = Game(
+    env_dev = Game(
         opponent_mode=args.opponent_mode,
         opponent_model_path=args.opponent_model_path
     )
-    env.ticks = 0
-    env.max_ticks = 1000
-    env.positions_x = []
-    env.positions_y = []
-    env.running = True
+    env_dev.ticks = 0
+    env_dev.max_ticks = 1000
+    env_dev.positions_x = []
+    env_dev.positions_y = []
+    env_dev.running = True
 
-    while env.running and env.ticks < env.max_ticks:
-        env.handle_events()
-        env.update()
-        env.draw()  # Active ça si tu veux voir le match
+    while env_dev.running and env_dev.ticks < env_dev.max_ticks:
+        env_dev.handle_events()
+        env_dev.update()
+        env_dev.draw()  # Active ça si tu veux voir le match
 
-        for p in env.match.players:
-            env.positions_x.append(p.x)
-            env.positions_y.append(p.y)
+        for p in env_dev.match.players:
+            env_dev.positions_x.append(p.x)
+            env_dev.positions_y.append(p.y)
 
-        env.ticks += 1
+        env_dev.ticks += 1
 
     # === Nouvelle façon de calculer le reward ===
-    agents = env.match.agents[:4]  # RL uniquement
+    agents = env_dev.match.agents[:4]  # RL uniquement
 
     # Prends la moyenne réelle de TOUS les rewards distribués pendant le match
     total_rewards = []
@@ -65,7 +65,7 @@ for ep in tqdm(range(episodes), desc="Episodes"):
     else:
         reward_mean = 0.0
 
-    mean_x, mean_y, std_x, std_y = compute_style_metrics(env.positions_x, env.positions_y)
+    mean_x, mean_y, std_x, std_y = compute_style_metrics(env_dev.positions_x, env_dev.positions_y)
 
     results.append({
         "mean_x": mean_x,
@@ -82,17 +82,17 @@ for ep in tqdm(range(episodes), desc="Episodes"):
         agent.local_rewards = []
 
     tqdm.write(
-        f"[TRAIN] Episode {ep + 1}/{episodes} | Bleu: {env.match.score_bleu} | "
-        f"Rouge: {env.match.score_rouge} | Mean RL Reward: {reward_mean:.4f}"
+        f"[TRAIN] Episode {ep + 1}/{episodes} | Bleu: {env_dev.match.score_bleu} | "
+        f"Rouge: {env_dev.match.score_rouge} | Mean RL Reward: {reward_mean:.4f}"
     )
 
     # === Sauvegarde intermédiaire ===
     if (ep + 1) % save_every == 0:
         checkpoint_path = f"data/models/rl_agent_v1_ep{ep + 1}.pth"
-        env.match.agents[0].save_model(checkpoint_path)
+        env_dev.match.agents[0].save_model(checkpoint_path)
 
 # === Sauvegarde finale ===
-env.match.agents[0].save_model(save_path)
+env_dev.match.agents[0].save_model(save_path)
 
 # === Visualisations ===
 plot_style_metrics(results)

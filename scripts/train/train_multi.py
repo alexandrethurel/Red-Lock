@@ -9,10 +9,10 @@ from tqdm import tqdm
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from env.core.game import Game
-from env.metrics import compute_style_metrics
-from env.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
-from env.agents.rl_agent import RLAgent
+from env_dev_dev.core.game import Game
+from env_dev_dev.metrics import compute_style_metrics
+from env_dev_dev.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
+from env_dev_dev.agents.rl_agent import RLAgent
 
 
 # === CONFIG TRAIN ===
@@ -26,26 +26,26 @@ max_ticks = 2000
 
 # === Fonction par worker ===
 def run_episode(dummy):
-    env = Game()
-    env.ticks = 0
-    env.max_ticks = max_ticks
-    env.positions_x = []
-    env.positions_y = []
-    env.running = True
+    env_dev = Game()
+    env_dev.ticks = 0
+    env_dev.max_ticks = max_ticks
+    env_dev.positions_x = []
+    env_dev.positions_y = []
+    env_dev.running = True
 
-    while env.running and env.ticks < env.max_ticks:
-        env.handle_events()
-        env.update()
-        for p in env.match.players:
-            env.positions_x.append(p.x)
-            env.positions_y.append(p.y)
-        env.ticks += 1
+    while env_dev.running and env_dev.ticks < env_dev.max_ticks:
+        env_dev.handle_events()
+        env_dev.update()
+        for p in env_dev.match.players:
+            env_dev.positions_x.append(p.x)
+            env_dev.positions_y.append(p.y)
+        env_dev.ticks += 1
 
-    reward = env.match.score_bleu - env.match.score_rouge
-    mean_x, mean_y, std_x, std_y = compute_style_metrics(env.positions_x, env.positions_y)
+    reward = env_dev.match.score_bleu - env_dev.match.score_rouge
+    mean_x, mean_y, std_x, std_y = compute_style_metrics(env_dev.positions_x, env_dev.positions_y)
 
     # Chaque agent apprend localement
-    for agent in env.match.agents[:4]:  # RL seulement
+    for agent in env_dev.match.agents[:4]:  # RL seulement
         all_rewards = agent.local_rewards + [reward]
         agent.learn(agent.saved_log_probs, all_rewards)
         agent.saved_log_probs = []
@@ -57,7 +57,7 @@ def run_episode(dummy):
         "std_x": std_x,
         "std_y": std_y,
         "quality": reward,
-        "model_state": env.match.agents[0].policy.state_dict()
+        "model_state": env_dev.match.agents[0].policy.state_dict()
     }
 
 
