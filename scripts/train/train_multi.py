@@ -9,10 +9,10 @@ from tqdm import tqdm
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from env_dev_dev.core.game import Game
-from env_dev_dev.metrics import compute_style_metrics
-from env_dev_dev.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
-from env_dev_dev.agents.rl_agent import RLAgent
+from env_dev.core.game import Game
+from env_dev.metrics import compute_style_metrics
+from env_dev.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
+from env_dev.agents.rl_agent import RLAgent
 
 
 # === CONFIG TRAIN ===

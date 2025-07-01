@@ -5,8 +5,8 @@ Agent totalement aléatoire avec logs DEBUG.
 
 import random
 from tqdm import tqdm
-from env_dev_dev.agents.base_agent import BaseAgent
-from env_dev_dev.actors.goalkeeper import GoalKeeper
+from env_dev.agents.base_agent import BaseAgent
+from env_dev.actors.goalkeeper import GoalKeeper
 
 
 class RandomAgent(BaseAgent):

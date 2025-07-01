@@ -1,3 +1,3 @@
-# env_dev_dev/__init__.py
+# env_dev/__init__.py
 # Peut rester vide, ou par ex :
 __version__ = "0.1"

@@ -5,11 +5,11 @@ Contient la fonction pour initialiser les entités du match.
 
 from tqdm import tqdm
 
-from env_dev_dev.actors.field_player import FieldPlayer
-from env_dev_dev.actors.goalkeeper import GoalKeeper
-from env_dev_dev.actors.ball import Ball
-from env_dev_dev.agents.rl_agent import RLAgent
-from env_dev_dev.agents.random_agent import RandomAgent
+from env_dev.actors.field_player import FieldPlayer
+from env_dev.actors.goalkeeper import GoalKeeper
+from env_dev.actors.ball import Ball
+from env_dev.agents.rl_agent import RLAgent
+from env_dev.agents.random_agent import RandomAgent
 
 
 def create_match_entities(opponent_mode="random", opponent_model_path=None):

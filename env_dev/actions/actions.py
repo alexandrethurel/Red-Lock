@@ -5,7 +5,7 @@ Actions + duels Red Lock — version DEBUG.
 
 import numpy as np
 from tqdm import tqdm
-from env_dev_dev.actors.goalkeeper import GoalKeeper
+from env_dev.actors.goalkeeper import GoalKeeper
 
 
 def passer(passeur, cible, ball):

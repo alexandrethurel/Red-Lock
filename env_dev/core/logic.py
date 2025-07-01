@@ -5,7 +5,7 @@ Regroupe la logique des duels, buts et relances pour Red Lock.
 
 from tqdm import tqdm
 import numpy as np
-from env_dev_dev.actors.goalkeeper import GoalKeeper
+from env_dev.actors.goalkeeper import GoalKeeper
 
 
 def relancer_gardien(gk, teammates, passer_fn, ball):

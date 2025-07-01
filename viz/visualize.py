@@ -7,8 +7,8 @@ import sys
 # Ajoute la racine du projet au path Python
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from env_dev_dev.core.game import Game
-from env_dev_dev.metrics import compute_style_metrics, plot_styles
+from env_dev.core.game import Game
+from env_dev.metrics import compute_style_metrics, plot_styles
 
 # === Crée le match ===
 env_dev = Game()

@@ -4,19 +4,19 @@ Coordonne la simulation du match Red Lock.
 """
 
 from tqdm import tqdm
-from env_dev_dev.actors.goalkeeper import GoalKeeper
+from env_dev.actors.goalkeeper import GoalKeeper
 import numpy as np
 
-from env_dev_dev.actions.actions import (
+from env_dev.actions.actions import (
     ramasser_balle,
     passer,
     tirer,
     dribbler,
     tenter_interception
 )
-from env_dev_dev.core.setup import create_match_entities
-from env_dev_dev.core.logic import handle_goal, reengager, relancer_gardien, handle_goal_kick
-from env_dev_dev.core.reward import RewardEngine
+from env_dev.core.setup import create_match_entities
+from env_dev.core.logic import handle_goal, reengager, relancer_gardien, handle_goal_kick
+from env_dev.core.reward import RewardEngine
 
 
 class Match:

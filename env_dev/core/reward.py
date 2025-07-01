@@ -4,7 +4,7 @@ Gestion centralisée des rewards/malus pour agents RL.
 """
 
 from tqdm import tqdm
-from env_dev_dev.agents.rl_agent import RLAgent
+from env_dev.agents.rl_agent import RLAgent
 import numpy as np
 
 

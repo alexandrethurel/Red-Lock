@@ -5,8 +5,8 @@ visualize_to_video.py : Rejoue un match et enregistre une vidéo.
 import pygame
 import imageio
 import numpy as np
-from env_dev_dev.core.game import Game
-from env_dev_dev.metrics import compute_style_metrics, plot_styles
+from env_dev.core.game import Game
+from env_dev.metrics import compute_style_metrics, plot_styles
 
 # === Init ===
 env_dev = Game()

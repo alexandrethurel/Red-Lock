@@ -6,9 +6,9 @@ Point d'entrée principal du jeu Red Lock.
 import pygame
 from tqdm import tqdm
 
-from env_dev_dev.core.match import Match
-from env_dev_dev.core.event_handler import EventHandler
-from env_dev_dev.core.renderer import Renderer  
+from env_dev.core.match import Match
+from env_dev.core.event_handler import EventHandler
+from env_dev.core.renderer import Renderer  
 
 class Game:
     """
