@@ -1,6 +1,11 @@
 """
 visualize.py : Rejoue un match Red Lock, frame par frame, avec visualisation lente.
 """
+import os
+import sys
+
+# Ajoute la racine du projet au path Python
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from env.core.game import Game
 from env.metrics import compute_style_metrics, plot_styles
@@ -9,8 +14,8 @@ from env.metrics import compute_style_metrics, plot_styles
 env = Game()
 
 # === Charge ton modèle RL ===
-model_path = "models/rl_agent_v1.pth"
-for agent in env.agents[:2]:
+model_path = "data/models/rl_agent_v1_ep2840.pth"
+for agent in env.match.agents[:2]:
     agent.load_model(model_path)
 
 # === Option : charger un autre modèle côté rouge ===
@@ -26,11 +31,11 @@ FPS = 30  # Mets 30 pour bien observer
 env.running = True
 env.ticks = 0
 
-while env.running and env.ticks < env.max_ticks:
+while env.running and env.match.ticks < env.match.max_ticks:
     env.handle_events()
     env.update()
     env.draw()
-    env.clock.tick(FPS)  # <= C'est ça qui impose la vitesse frame par frame
+    env.clock.tick(FPS)
 
 print("\n=== Match terminé ===")
 

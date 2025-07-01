@@ -1,27 +1,42 @@
 """
-train.py : Entraînement RL + Sauvegarde + Visualisation styles.
+train.py : Entraînement RL configurable + Sauvegarde intermédiaire + Visualisations.
 """
 
 import sys
 import os
+import argparse
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
 # Ajoute la racine du projet au path Python
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from env.core.game import Game
-from env.metrics import compute_style_metrics, plot_styles
-from env.agents.rl_agent import RLAgent
+from env.metrics import compute_style_metrics
+from env.core.visualizer import plot_reward_evolution, plot_style_metrics, save_all_plots
 
-episodes = 100
-save_path = "data/models/rl_agent_v1.pth"
+
+# === ARGPARSE ===
+parser = argparse.ArgumentParser(description="Train Red Lock RL Agent")
+parser.add_argument("--opponent_mode", type=str, choices=["random", "model"], default="random",
+                    help="Type d'adversaire : random ou model")
+parser.add_argument("--opponent_model_path", type=str, default=None,
+                    help="Chemin vers le modèle si opponent_mode = model")
+args = parser.parse_args()
+
+# === CONFIG TRAIN ===
+episodes = 1500
+save_every = 50  # Sauvegarde tous les X épisodes
+save_path = "data/models/rl_agent_v1_final.pth"
+
 results = []
 
 for ep in tqdm(range(episodes), desc="Episodes"):
-    env = Game()
+    env = Game(
+        opponent_mode=args.opponent_mode,
+        opponent_model_path=args.opponent_model_path
+    )
     env.ticks = 0
-    env.max_ticks = 10000
+    env.max_ticks = 1000
     env.positions_x = []
     env.positions_y = []
     env.running = True
@@ -29,16 +44,26 @@ for ep in tqdm(range(episodes), desc="Episodes"):
     while env.running and env.ticks < env.max_ticks:
         env.handle_events()
         env.update()
-        env.draw()  # Désactive pour aller plus vite
+        env.draw()  # Active ça si tu veux voir le match
 
-        for p in env.players:
+        for p in env.match.players:
             env.positions_x.append(p.x)
             env.positions_y.append(p.y)
 
         env.ticks += 1
 
-    # Reward global : diff de score
-    reward = env.score_bleu - env.score_rouge
+    # === Nouvelle façon de calculer le reward ===
+    agents = env.match.agents[:4]  # RL uniquement
+
+    # Prends la moyenne réelle de TOUS les rewards distribués pendant le match
+    total_rewards = []
+    for agent in agents:
+        total_rewards.extend(agent.local_rewards)
+
+    if total_rewards:
+        reward_mean = sum(total_rewards) / len(total_rewards)
+    else:
+        reward_mean = 0.0
 
     mean_x, mean_y, std_x, std_y = compute_style_metrics(env.positions_x, env.positions_y)
 
@@ -47,32 +72,29 @@ for ep in tqdm(range(episodes), desc="Episodes"):
         "mean_y": mean_y,
         "std_x": std_x,
         "std_y": std_y,
-        "quality": reward
+        "quality": reward_mean
     })
 
-    for agent in env.agents[:2]:  # RL seulement
-        # Combine : micro + macro
-        all_rewards = agent.local_rewards + [reward]
-        agent.learn(agent.saved_log_probs, all_rewards)
-
-        # Reset pour le prochain match
+    for agent in agents:
+        # Utilise TOUS les rewards déjà accumulés (pas besoin de + [reward_mean])
+        agent.learn(agent.saved_log_probs, agent.local_rewards)
         agent.saved_log_probs = []
         agent.local_rewards = []
 
-    tqdm.write(f"[TRAIN] Episode {ep} | Bleu: {env.score_bleu} | Rouge: {env.score_rouge} | Reward: {reward}")
+    tqdm.write(
+        f"[TRAIN] Episode {ep + 1}/{episodes} | Bleu: {env.match.score_bleu} | "
+        f"Rouge: {env.match.score_rouge} | Mean RL Reward: {reward_mean:.4f}"
+    )
 
-# Sauvegarde finale du modèle
-env.agents[0].save_model(save_path)
+    # === Sauvegarde intermédiaire ===
+    if (ep + 1) % save_every == 0:
+        checkpoint_path = f"data/models/rl_agent_v1_ep{ep + 1}.pth"
+        env.match.agents[0].save_model(checkpoint_path)
 
-# Visualisation style de jeu
-plot_styles(results)
+# === Sauvegarde finale ===
+env.match.agents[0].save_model(save_path)
 
-# Graphique : évolution du reward
-rewards = [res["quality"] for res in results]
-plt.figure(figsize=(10, 5))
-plt.plot(range(len(rewards)), rewards, marker='o')
-plt.title("Évolution du reward par épisode")
-plt.xlabel("Épisode")
-plt.ylabel("Reward (Score Bleu - Score Rouge)")
-plt.grid(True)
-plt.show()
+# === Visualisations ===
+plot_style_metrics(results)
+plot_reward_evolution(results)
+save_all_plots(results, out_dir="data/plots")
